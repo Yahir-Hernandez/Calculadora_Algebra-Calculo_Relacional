@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Álgebra y Cálculo Relacional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+
+        .credits {
+            background: #f8f9fa;
+            border-left: 4px solid #2c3e50;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 2px;
+        }
+
+        .credits p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .credits strong {
+            color: #2c3e50;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2em;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 30px;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .table-input {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 2px;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #555;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+        }
+
+        textarea {
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.1s;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        button:hover {
+            background: #34495e;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+            background: #1a252f;
+        }
+
+        .operations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            border: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f5f5f5;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .info {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            border-left: 3px solid #2c3e50;
+        }
+
+        .info p {
+            margin: 6px 0;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 2px;
+            margin-top: 15px;
+            border-left: 3px solid #c62828;
+        }
+
+        .examples {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 2px;
+            font-size: 13px;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+
+        .examples code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .symbol-keyboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+            gap: 6px;
+            margin: 15px 0;
+            padding: 16px;
+            background: #fafafa;
+            border-radius: 2px;
+            border: 1px solid #d0d0d0;
+        }
+
+        .symbol-btn {
+            background: white;
+            border: 1px solid #d0d0d0;
+            color: #2c3e50;
+            padding: 10px 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .symbol-btn:hover {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+            transform: translateY(-1px);
+        }
+
+        .symbol-btn:active {
+            transform: translateY(0);
+            background: #1a252f;
+        }
+
+        .symbol-btn .symbol {
+            font-size: 20px;
+        }
+
+        .symbol-btn .label {
+            font-size: 9px;
+            font-weight: normal;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .keyboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            margin-top: 16px;
+        }
+
+        .keyboard-header h3 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .toggle-keyboard {
+            background: transparent;
+            color: #555;
+            border: 1px solid #d0d0d0;
+            padding: 6px 14px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .toggle-keyboard:hover {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Álgebra y Cálculo Relacional</h1>
+
+        <div class="credits">
+            <p><strong>🤖 Generado por:</strong> GitHub Copilot (Claude Sonnet 4.5)</p>
+            <p>Esta calculadora fue desarrollada mediante inteligencia artificial para facilitar el aprendizaje y práctica del álgebra relacional y cálculo relacional de tuplas.</p>
+        </div>
+
+        <div class="info">
+            <p><strong>Instrucciones:</strong></p>
+            <p>• Define tus tablas con cualquier nombre que desees</p>
+            <p>• Formato de tabla: <code>NOMBRE=[{"campo":"valor"}]</code></p>
+            <p>• Usa las tablas en consultas con su nombre exacto</p>
+            <p>• Ejemplo de consulta: <code>{e.nombre | EMPLEADO(e) AND e.edad > 25}</code></p>
+        </div>
+
+        <div class="section">
+            <h2>Definir Tablas</h2>
+
+            <div class="table-input">
+                <label>Tablas (formato: NOMBRE=JSON, una por línea):</label>
+                <textarea id="customTables" placeholder='EMPLEADO=[{"dni":"001","nombre":"Juan","edad":25}]
+DEPARTAMENTO=[{"id":1,"nombre":"IT","presupuesto":100000}]
+PROYECTO=[{"id":1,"titulo":"Web App","cliente":"Empresa X"}]
+CIUDAD=[{"id":1,"nombre":"Madrid","pais":"España"}]'></textarea>
+                <div class="examples">
+                    <strong>Instrucciones:</strong>
+                    <p>• Una tabla por línea en formato: <code>NOMBRE=[...datos JSON...]</code></p>
+                    <p>• Los nombres de tabla deben empezar con letra y contener solo letras, números y guiones bajos</p>
+                    <p>• Ejemplo: <code>A=[{"id":1,"valor":"test"}]</code></p>
+                </div>
+            </div>
+
+            <button onclick="loadExamples()">Cargar Ejemplo</button>
+            <button onclick="clearAllTables()">Limpiar Todas</button>
+        </div>
+
+        <div class="section">
+            <h2>Cálculo Relacional de Tuplas</h2>
+            
+            <div class="table-input">
+                <label>Consulta en formato {t | CONDICION(t)}:</label>
+                <textarea id="tupleQuery" placeholder='Ejemplos con ∈:
+{t | t ∈ A ∧ t.edad > 25}
+{t.nombre, t.edad | t ∈ A ∧ t.edad > 20}
+
+Ejemplos con paréntesis:
+{e.nombre, e.edad | EMPLEADO(e) AND e.edad > 25}
+{e.nombre, d.nombre | EMPLEADO(e) AND DEPARTAMENTO(d) AND e.dept_id = d.id}
+
+Múltiples tablas:
+{a.nombre, b.ciudad, c.proyecto | A(a) AND B(b) AND C(c) AND a.id = b.id AND a.id = c.id}'></textarea>
+                
+                <div class="keyboard-header">
+                    <h3>Teclado de Símbolos</h3>
+                    <button class="toggle-keyboard" onclick="toggleKeyboard()">
+                        <span id="keyboardToggleText">Ocultar</span>
+                    </button>
+                </div>
+                
+                <div id="symbolKeyboard" class="symbol-keyboard">
+                    <button class="symbol-btn" onclick="insertSymbol('∈')" title="Pertenece a">
+                        <span class="symbol">∈</span>
+                        <span class="label">pertenece</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('∧')" title="AND lógico">
+                        <span class="symbol">∧</span>
+                        <span class="label">AND</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('∨')" title="OR lógico">
+                        <span class="symbol">∨</span>
+                        <span class="label">OR</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('¬')" title="Negación">
+                        <span class="symbol">¬</span>
+                        <span class="label">NOT</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('∃')" title="Existe">
+                        <span class="symbol">∃</span>
+                        <span class="label">existe</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('∀')" title="Para todo">
+                        <span class="symbol">∀</span>
+                        <span class="label">para todo</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('=')" title="Igual">
+                        <span class="symbol">=</span>
+                        <span class="label">igual</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('!=')" title="Diferente">
+                        <span class="symbol">≠</span>
+                        <span class="label">diferente</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('>')" title="Mayor que">
+                        <span class="symbol">></span>
+                        <span class="label">mayor</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('<')" title="Menor que">
+                        <span class="symbol"><</span>
+                        <span class="label">menor</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('>=')" title="Mayor o igual">
+                        <span class="symbol">≥</span>
+                        <span class="label">mayor/igual</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('<=')" title="Menor o igual">
+                        <span class="symbol">≤</span>
+                        <span class="label">menor/igual</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('σ')" title="Selección">
+                        <span class="symbol">σ</span>
+                        <span class="label">selección</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('π')" title="Proyección">
+                        <span class="symbol">π</span>
+                        <span class="label">proyección</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('∪')" title="Unión">
+                        <span class="symbol">∪</span>
+                        <span class="label">unión</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('∩')" title="Intersección">
+                        <span class="symbol">∩</span>
+                        <span class="label">intersección</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('−')" title="Diferencia">
+                        <span class="symbol">−</span>
+                        <span class="label">diferencia</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('×')" title="Producto">
+                        <span class="symbol">×</span>
+                        <span class="label">producto</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('⋈')" title="Join">
+                        <span class="symbol">⋈</span>
+                        <span class="label">join</span>
+                    </button>
+                    <button class="symbol-btn" onclick="insertSymbol('ρ')" title="Renombrar">
+                        <span class="symbol">ρ</span>
+                        <span class="label">renombrar</span>
+                    </button>
+                </div>
+                
+                <div class="examples">
+                    <strong>Símbolos disponibles en el teclado virtual ↑</strong>
+                    <p>• Click en cualquier símbolo para insertarlo en la consulta</p>
+                    <p>• Los símbolos se insertan en la posición del cursor</p>
+                </div>
+            </div>
+            
+            <button onclick="executeTupleQuery()">Ejecutar Consulta</button>
+            <button onclick="showQueryExamples()">Ver Ejemplos</button>
+        </div>
+
+        <div class="section">
+            <h2>Operaciones Relacionales</h2>
+
+            <div class="operations">
+                <button onclick="performSelection()">σ Selección</button>
+                <button onclick="performProjection()">π Proyección</button>
+                <button onclick="performUnion()">∪ Unión</button>
+                <button onclick="performIntersection()">∩ Intersección</button>
+                <button onclick="performDifference()">− Diferencia</button>
+                <button onclick="performProduct()">× Producto Cartesiano</button>
+                <button onclick="performJoin()">⋈ Join Natural</button>
+                <button onclick="performRename()">ρ Renombrar</button>
+            </div>
+
+            <div id="operationParams"></div>
+        </div>
+
+        <div class="section">
+            <h2>Resultado</h2>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script src="calculadora-relacional.js"></script>
+</body>
+</html>
